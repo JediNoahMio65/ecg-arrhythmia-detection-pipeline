@@ -1,0 +1,7 @@
+# Raw MIT-BIH records are not committed. See data/README.md for download instructions.
+*.dat
+*.hea
+*.atr
+*.xws
+*.zip
+mitdb/
