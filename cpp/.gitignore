@@ -1,0 +1,5 @@
+# Local CMake build trees
+build/
+out/
+.vs/
+CMakeUserPresets.json
