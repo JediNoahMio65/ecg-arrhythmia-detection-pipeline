@@ -26,6 +26,7 @@ endif()
 add_library(wfdb_io
   src/header.cpp
   src/signal_reader.cpp
+  src/annotation.cpp
 )
 target_include_directories(wfdb_io PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(wfdb_io PRIVATE project_warnings)
@@ -35,6 +36,12 @@ target_link_libraries(wfdb_io PRIVATE project_warnings)
 # ---------------------------------------------------------------------------
 add_executable(wfdb_info tools/wfdb_info.cpp)
 target_link_libraries(wfdb_info PRIVATE wfdb_io project_warnings)
+
+# ---------------------------------------------------------------------------
+# Command-line annotation summary tool
+# ---------------------------------------------------------------------------
+add_executable(wfdb_ann tools/wfdb_ann.cpp)
+target_link_libraries(wfdb_ann PRIVATE wfdb_io project_warnings)
 
 # ---------------------------------------------------------------------------
 # Tests
@@ -56,14 +63,17 @@ if(BUILD_TESTING_WFDB)
   add_executable(wfdb_tests
     tests/test_header.cpp
     tests/test_signal_reader.cpp
+    tests/test_annotation.cpp
   )
   target_link_libraries(wfdb_tests
     PRIVATE wfdb_io project_warnings GTest::gtest_main)
 
-  # Absolute path to the MIT-BIH files so the tests can find them from any
-  # working directory. The signal tests skip themselves if the data is absent.
+  # Absolute paths to the MIT-BIH files and the reference fixture so the tests
+  # can find them from any working directory. Tests that need either one skip
+  # themselves when it is absent.
   target_compile_definitions(wfdb_tests PRIVATE
-    WFDB_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../data/mitdb")
+    WFDB_TEST_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../data/mitdb"
+    WFDB_TEST_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/data")
 
   include(GoogleTest)
   gtest_discover_tests(wfdb_tests)
